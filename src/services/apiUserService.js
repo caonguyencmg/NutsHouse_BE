@@ -1,7 +1,7 @@
 import { col, fn, Op, where } from "sequelize";
 import db from "../models/index";
 
-let getBillUser = (phoneNumber, searchText, status) => {
+let getBillUser = (phoneNumber, searchText, status, billsCode) => {
   return new Promise(async (resolve, reject) => {
     try {
       let bills = "";
@@ -11,11 +11,13 @@ let getBillUser = (phoneNumber, searchText, status) => {
             phoneNumber: phoneNumber,
             isDelete: 0,
             status: status ? status : { [Op.or]: [0, 1, 2, 3] },
+            billsCode: billsCode.trim().toUpperCase(),
           },
         });
       } else {
         const whereClause = {
           isDelete: 0,
+          billsCode: billsCode.trim().toUpperCase(),
           status: status ? status : { [Op.or]: [0, 1, 2, 3] },
         };
         if (searchText && String(searchText).trim() !== "") {
@@ -33,7 +35,7 @@ let getBillUser = (phoneNumber, searchText, status) => {
             }),
           ];
         }
-
+        console.log("whereClause", whereClause);
         bills = await db.Bill.findAll({
           where: whereClause,
           limit: 100, // default

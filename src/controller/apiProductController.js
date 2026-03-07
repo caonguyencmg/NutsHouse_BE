@@ -1,7 +1,8 @@
 import apiProductService from "../services/apiProductService";
 
 let handleGetProducts = async (req, res) => {
-  let products = await apiProductService.getListProducts();
+  let status = req.query.status;
+  let products = await apiProductService.getListProducts(status);
   return res.status(200).json({
     statusCode: 200,
     errMessage: "Ok",
@@ -15,12 +16,23 @@ let handleCreateProduct = async (req, res) => {
 };
 
 let handleEditProduct = async (req, res) => {
-  let products = await apiProductService.updateProduct();
-  return res.status(200).json({
-    statusCode: 200,
-    errMessage: "Ok",
-    products,
-  });
+  try {
+    let products = await apiProductService.updateProduct({
+      ...req.body,
+      files: req.files,
+    });
+
+    return res.status(200).json({
+      statusCode: 200,
+      errMessage: "Ok",
+      products,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      statusCode: 500,
+      errMessage: "Server error",
+    });
+  }
 };
 
 module.exports = {

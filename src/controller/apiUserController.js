@@ -22,7 +22,13 @@ let handleGetBill = async (req, res) => {
   let phoneNumber = req.query.phoneNumber;
   let searchText = req.query.searchText || "";
   let status = req.query.status;
-  let bills = await apiUserService.getBillUser(phoneNumber, searchText, status);
+  let billsCode = req.query.billsCode;
+  let bills = await apiUserService.getBillUser(
+    phoneNumber,
+    searchText,
+    status,
+    billsCode,
+  );
   return res.status(200).json({
     status: 200,
     errMessage: "Ok",

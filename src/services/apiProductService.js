@@ -1,11 +1,25 @@
-import { where } from "sequelize";
+import { Op, where } from "sequelize";
 import db from "../models/index";
 
-let getListProducts = () => {
+let getListProducts = (status) => {
   return new Promise(async (resolve, reject) => {
     try {
+      let whereCondition = {
+        isDelete: 0,
+      };
+
+      if (status == 1) {
+        whereCondition.quantity = {
+          [Op.gt]: 0, // quantity > 0
+        };
+      } else if (status == 0) {
+        whereCondition.quantity = {
+          [Op.lte]: 0, // quantity <= 0
+        };
+      }
+
       const products = await db.Product.findAll({
-        where: { isDelete: 0 },
+        where: whereCondition,
         order: [["createdAt", "DESC"]],
       });
       resolve(products);
@@ -43,7 +57,8 @@ let createProduct = (data) => {
   });
 };
 
-let updateProduct = (data, files) => {
+let updateProduct = (data) => {
+  const files = data.files; // mảng file mới (nếu có)
   return new Promise(async (resolve, reject) => {
     try {
       if (!data.id) {
@@ -74,17 +89,21 @@ let updateProduct = (data, files) => {
       }
 
       // nếu có upload ảnh mới
-      if (files && files.length > 0) {
-        // xoá toàn bộ ảnh cũ
-        imageList.forEach((imgPath) => {
-          const oldPath = path.join(__dirname, "..", "..", imgPath);
-          if (fs.existsSync(oldPath)) {
-            fs.unlinkSync(oldPath);
-          }
-        });
+      let oldImages = data.oldImages || [];
 
-        // tạo mảng path mới
-        imageList = files.map((file) => `/uploads/products/${file.filename}`);
+      if (!Array.isArray(oldImages)) {
+        oldImages = [oldImages];
+      }
+
+      imageList = [...oldImages];
+
+      // nếu có upload ảnh mới
+      if (files && files.length > 0) {
+        const newImages = files.map(
+          (file) => `/uploads/products/${file.filename}`,
+        );
+
+        imageList = [...imageList, ...newImages];
       }
 
       // update field
@@ -93,7 +112,7 @@ let updateProduct = (data, files) => {
       product.price = data.price;
       product.quantity = data.quantity;
       product.date = data.date;
-      product.imgs = JSON.stringify(imageList);
+      product.img = JSON.stringify(imageList);
 
       await product.save();
 

@@ -5,12 +5,12 @@ const router = express.Router();
 const apiProductController = require("../controller/apiProductController");
 
 router.get("/get-list", apiProductController.handleGetProducts);
-router.get(
+router.put(
   "/edit-product",
-  upload.array("images", 5),
+  upload.array("newImages", 5),
   apiProductController.handleEditProduct,
 );
-router.get(
+router.post(
   "/create-product",
   upload.array("images", 5),
   apiProductController.handleCreateProduct,

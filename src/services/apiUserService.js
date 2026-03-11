@@ -36,7 +36,6 @@ let getBillUser = (phoneNumber, searchText, status, billsCode) => {
             }),
           ];
         }
-        console.log("whereClause", whereClause);
         bills = await db.Bill.findAll({
           where: whereClause,
           limit: 100, // default

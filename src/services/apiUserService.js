@@ -11,15 +11,16 @@ let getBillUser = (phoneNumber, searchText, status, billsCode) => {
             phoneNumber: phoneNumber,
             isDelete: 0,
             status: status ? status : { [Op.or]: [0, 1, 2, 3] },
-            billsCode: billsCode.trim().toUpperCase(),
           },
         });
       } else {
         const whereClause = {
           isDelete: 0,
-          billsCode: billsCode.trim().toUpperCase(),
           status: status ? status : { [Op.or]: [0, 1, 2, 3] },
         };
+        if (billsCode?.trim()) {
+          whereClause.billsCode = billsCode.trim().toUpperCase();
+        }
         if (searchText && String(searchText).trim() !== "") {
           const q = String(searchText).trim().toLowerCase();
 

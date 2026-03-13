@@ -146,10 +146,10 @@ let deleteProduct = (id) => {
     let product = await db.Product.findOne({ where: { id: id }, raw: false });
     if (product) {
       product.isDelete = 1;
-      await bill.save();
+      await product.save();
       resolve({
         status: 200,
-        message: "Xoá đơn hàng thành công",
+        message: "Xoá sản phẩm thành công",
       });
     }
   });

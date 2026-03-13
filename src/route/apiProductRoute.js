@@ -15,5 +15,6 @@ router.post(
   upload.array("images", 5),
   apiProductController.handleCreateProduct,
 );
+router.put("/delete-product", apiProductController.handleDeleteProduct);
 
 module.exports = router;

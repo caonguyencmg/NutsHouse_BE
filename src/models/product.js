@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       quantity: DataTypes.INTEGER,
       date: DataTypes.STRING,
+      isDelete: DataTypes.INTEGER,
     },
     {
       sequelize,

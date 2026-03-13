@@ -15,6 +15,19 @@ let handleCreateProduct = async (req, res) => {
   return res.status(200).json(message);
 };
 
+let handleDeleteProduct = async (req, res) => {
+  let productId = req.body.id;
+  if (!productId) {
+    return res.status(200).json({
+      errCode: 401,
+      errMessage: "Missing required parameters!",
+    });
+  }
+
+  let message = await apiProductService.deleteProduct(productId);
+  return res.status(200).json(message);
+};
+
 let handleEditProduct = async (req, res) => {
   try {
     let products = await apiProductService.updateProduct({
@@ -39,4 +52,5 @@ module.exports = {
   handleGetProducts,
   handleEditProduct,
   handleCreateProduct,
+  handleDeleteProduct,
 };
